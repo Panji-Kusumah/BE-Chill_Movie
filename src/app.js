@@ -4,7 +4,7 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS configuration
+
 const corsOptions = {
     origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000', 'http://localhost:3001'],
     credentials: true,
@@ -12,15 +12,13 @@ const corsOptions = {
     allowedHeaders: ['Content-Type', 'Authorization']
 };
 
-// Middleware
+
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Serve static files untuk uploads (consider protecting this route)
 app.use('/uploads', express.static('uploads'));
 
-// Routes
+
 const movieRoutes = require('./routes/movieRoutes');
 const episodeRoutes = require('./routes/episodeRoutes');
 const genreRoutes = require('./routes/genreRoutes');
