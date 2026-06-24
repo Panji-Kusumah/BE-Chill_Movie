@@ -3,7 +3,7 @@ const router = express.Router();
 const GenreController = require('../controllers/genreController');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// Proteksi semua route
+
 router.use(authMiddleware.verifyToken)
 router.get('/genres', GenreController.getAllGenres);
 router.get('/genre/:id', GenreController.getGenreById);

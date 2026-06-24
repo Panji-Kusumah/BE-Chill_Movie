@@ -3,7 +3,7 @@ const router = express.Router();
 const PackageController = require('../controllers/packageController');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// Proteksi semua route
+
 router.use(authMiddleware.verifyToken);
 router.get('/packages', PackageController.getAllPackages);
 router.get('/package/:id', PackageController.getPackageById);

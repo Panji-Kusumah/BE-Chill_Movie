@@ -66,7 +66,6 @@ class MovieService {
             throw new Error(`Failed to fetch movie: ${error.message}`);
         }
     }
-
     static async createMovie(movieData, genre_ids) {
         const { title, description, release_year, duration, rating, poster_url } = movieData;
         
@@ -74,7 +73,6 @@ class MovieService {
         if (!title) {
             throw new Error('Title is required');
         }
-        
         try {
             const query = `
                 INSERT INTO movies (title, description, release_year, duration, rating, poster_url)
@@ -83,9 +81,7 @@ class MovieService {
             const [result] = await db.execute(query, [
                 title, description, release_year, duration, rating, poster_url
             ]);
-
             const movieId = result.insertId;
-
             // Insert genre relations
             if (genre_ids && genre_ids.length > 0) {
                 for (const genreId of genre_ids) {

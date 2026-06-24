@@ -7,7 +7,6 @@ class AuthService {
 
     async register(userData) {
         const { fullname, username, email, password } = userData;
-        // Validate inputs
         if (!fullname || !username || !email || !password) {
             const error = new Error('All fields (fullname, username, email, password) are required');
             error.statusCode = 400;
@@ -19,7 +18,7 @@ class AuthService {
             throw error;
         }
         try {
-            // 1. Cek apakah email atau username sudah terdaftar
+            // Cek apakah email atau username sudah terdaftar
             const [existingUsers] = await db.execute(
                 'SELECT id FROM users WHERE email = ? OR username = ?',
                 [email.toLowerCase(), username]
@@ -29,20 +28,18 @@ class AuthService {
                 error.statusCode = 409;
                 throw error;
             }
-            // 2. Hash password dengan bcrypt
+            // ngehash password dengan bcrypt
             const hashedPassword = await bcrypt.hash(password, 10);
-            // 3. Insert user baru ke database
             const [result] = await db.execute(
                 `INSERT INTO users (fullname, username, email, password, is_verified) VALUES (?, ?, ?, ?, ?)`,
                 [fullname, username, email.toLowerCase(), hashedPassword, false]
             );
-            // 4. Kirim email verifikasi
             try {
                 await EmailService.sendVerificationEmail(email, fullname);
             } catch (emailError) {
                 console.error('Failed to send verification email:', emailError.message);
             }
-            // 5. Ambil data user yang baru dibuat
+            // Ambil data user yang baru dibuat
             const [users] = await db.execute(
                 `SELECT id, fullname, username, email,profile_photo, is_verified, created_at FROM users HERE id = ?`,
                 [result.insertId]
@@ -54,14 +51,13 @@ class AuthService {
         }
     }
     async login({ email, password }) {
-        // Validate inputs
         if (!email || !password) {
             const error = new Error('Email and password are required');
             error.statusCode = 400;
             throw error;
         }
         try {
-            // 1. Cari user berdasarkan email
+            // Cari user berdasarkan email
             const [users] = await db.execute(
                 `SELECT id, fullname, username,email, password, is_verified FROM users WHERE email = ?`,
                 [email.toLowerCase()]
@@ -73,7 +69,7 @@ class AuthService {
                 );
             }
             const user = users[0];
-            // 2. Cek password dengan bcrypt.compare
+            // Cek password dengan bcrypt.compare
             const valid = await bcrypt.compare(
                 password,
                 user.password
@@ -84,7 +80,7 @@ class AuthService {
                     { statusCode: 401 }
                 );
             }
-            // 3. Generate JWT token
+            // Generate JWT token
             if (!process.env.JWT_SECRET) {
                 throw new Error('JWT_SECRET is not configured');
             }
@@ -97,7 +93,7 @@ class AuthService {
                 process.env.JWT_SECRET,
                 { expiresIn: '24h' }
             );
-            // 4. Hapus password dari response
+            // Hapus password dari response
             const { password: _, ...userWithoutPassword } = user;
             return {
                 user: userWithoutPassword,

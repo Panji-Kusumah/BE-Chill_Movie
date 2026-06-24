@@ -103,7 +103,6 @@ router.patch('/movie/:id', async (req, res) => {
                 message: 'Movie not found'
             });
         }
-        // Update movie
         await db.query(
             `UPDATE Series_Film SET 
         judul = ?, deskripsi = ?, tahun_rilis = ?, rating = ?, durasi = ?,

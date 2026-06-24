@@ -13,7 +13,6 @@ function generateTestToken(payload = {}, secret = process.env.JWT_SECRET) {
         username: 'testuser',
         ...payload
     };
-
     return jwt.sign(defaultPayload, secret, { expiresIn: '24h' });
 }
 

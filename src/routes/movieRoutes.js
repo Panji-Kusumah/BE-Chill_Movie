@@ -3,7 +3,7 @@ const router = express.Router();
 const MovieController = require('../controllers/movieController');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// Proteksi semua route di bawah ini dengan middleware
+
 router.use(authMiddleware.verifyToken);
 router.get('/movies', MovieController.getAllMovies);
 router.get('/movie/:id', MovieController.getMovieById);

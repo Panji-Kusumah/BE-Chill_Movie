@@ -1,13 +1,12 @@
 const multer = require('multer');
 const path = require('path');
 
-// Konfigurasi storage
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/profiles/');
     },
     filename: (req, file, cb) => {
-        // Nama file: user-{userId}-{timestamp}.ext
         const userId = req.user?.userId || 'unknown';
         const ext = path.extname(file.originalname);
         const filename = `user-${userId}-${Date.now()}${ext}`;
@@ -15,7 +14,7 @@ const storage = multer.diskStorage({
     }
 });
 
-// Filter file (hanya gambar)
+
 const fileFilter = (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|gif/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());

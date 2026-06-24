@@ -54,7 +54,7 @@ class EmailService {
             const [users] = await db.execute(
                 'SELECT id, email, is_verified, verification_token FROM users WHERE is_verified = false'
             );
-            // 2. Cari user dengan token yang match
+            // 2. Cari user dengan token yang sama
             let user = null;
             for (const u of users) {
                 try {
@@ -64,7 +64,6 @@ class EmailService {
                         break;
                     }
                 } catch (err) {
-                    // Lanjut ke user berikutnya jika error
                     continue;
                 }
             }

@@ -20,9 +20,7 @@ class UserController {
             if (!req.file) {
                 return ApiResponse.error(res, 400, 'No file uploaded');
             }
-            // Path foto yang baru
             const photoPath = req.file.path;
-            // Update di database
             await UserService.updateProfilePhoto(userId, photoPath);
             return ApiResponse.success(res, 200, { photo_url: photoPath }, 'Profile photo updated successfully');
         } catch (error) {

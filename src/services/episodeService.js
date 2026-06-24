@@ -53,7 +53,6 @@ class EpisodeService {
             throw new Error(`Failed to create episode: ${error.message}`);
         }
     }
-
     static async updateEpisode(id, episodeData) {
         const { judul_episode, nomor_season, nomor_episode, durasi, video_url, thumbnail_url, deskripsi } = episodeData;
         try {

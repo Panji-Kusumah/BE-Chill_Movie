@@ -3,7 +3,6 @@ const router = express.Router();
 const EpisodeController = require('../controllers/episodeController');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// Proteksi semua route
 router.use(authMiddleware.verifyToken);
 router.get('/episodes', EpisodeController.getAllEpisodes);
 router.get('/episode/series/:seriesId', EpisodeController.getEpisodesBySeries);
