@@ -28,21 +28,17 @@ const packageRoutes = require('./routes/packageRoutes');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 
-// Auth routes (public)
 app.use('/api/auth', authRoutes);
-
-// Protected routes
 app.use('/api/users', userRoutes);
 app.use('/api', movieRoutes);
 app.use('/api', episodeRoutes);
 app.use('/api', genreRoutes);
 app.use('/api', packageRoutes);
 
-// Health check
+
 app.get('/', (req, res) => {
     res.json({
-        message: 'Chill Movie API',
-        version: '1.0.0',
+        message: 'Chill Movie API BERHASIL BRO !!!',
         endpoints: {
             auth: '/api/auth',
             users: '/api/users',
@@ -54,14 +50,12 @@ app.get('/', (req, res) => {
     });
 });
 
-// Error handling middleware (must be after all routes)
 const errorHandler = require('./middleware/errorHandler');
 const notFound = require('./middleware/notFound');
 
 app.use(notFound);
 app.use(errorHandler);
 
-// Start server 
 const server = app.listen(PORT, () => {
     console.log(`✅ Server running on http://localhost:${PORT}`);
 });

@@ -1,15 +1,11 @@
 module.exports = {
     testEnvironment: 'node',
-    transformIgnorePatterns: [
-        '/node_modules/(?!(uuid)/)'
-    ],
     testMatch: ['**/test/**/*.test.js'],
     collectCoverageFrom: [
         'src/**/*.js',
         '!src/app.js'
     ],
     moduleNameMapper: {
-        '^uuid$': require.resolve('uuid')
+        '^uuid$': '<rootDir>/node_modules/uuid/dist/index.js'
     }
 };
-
