@@ -6,20 +6,13 @@ const db = require('../config/database');
 class EmailService {
     static async sendVerificationEmail(email, fullname) {
         try {
-            // 1. Generate token verifikasi
             const token = uuidv4();
-            
-            // 2. Hash token untuk disimpan di database
             const hashedToken = await bcrypt.hash(token, 10);
-            
-            // 3. Simpan hashed token ke database
             await db.execute(
                 'UPDATE users SET verification_token = ? WHERE email = ?',
                 [hashedToken, email]
             );
-            // 4. Buat link verifikasi (gunakan plain token di URL)
             const verificationLink = `${process.env.APP_URL || 'http://localhost:3000'}/api/auth/verify-email?token=${token}`;
-            // 5. Kirim email via Resend
             const { data, error } = await resend.emails.send({
                 from: `${process.env.RESEND_FROM_NAME || 'Chill Movie'} <${process.env.RESEND_FROM_EMAIL}>`,
                 to: [email],
@@ -50,11 +43,9 @@ class EmailService {
     }
     static async verifyEmail(token) {
         try {
-            // 1. Cari semua user dengan token tidak null
             const [users] = await db.execute(
                 'SELECT id, email, is_verified, verification_token FROM users WHERE is_verified = false'
             );
-            // 2. Cari user dengan token yang 
             let user = null;
             for (const u of users) {
                 try {
@@ -72,13 +63,11 @@ class EmailService {
                 error.statusCode = 400;
                 throw error;
             }
-            // 3. Cek apakah sudah terverifikasi
             if (user.is_verified) {
                 const error = new Error('Email already verified');
                 error.statusCode = 400;
                 throw error;
             }
-            // 4. Update status verifikasi
             await db.execute(
                 'UPDATE users SET is_verified = TRUE, verification_token = NULL WHERE id = ?',
                 [user.id]
