@@ -230,3 +230,5 @@ ISC License
 ## 👨‍💻 Author
 
 Built as part of a Fullstack Developer learning journey using Node.js, Express.js, MySQL, and RESTful API architecture.
+
+.env is uploaded only for bootcamp assignments, use it wisely
