@@ -66,7 +66,6 @@ class MovieService {
                 title, description, release_year, duration, rating, poster_url
             ]);
             const movieId = result.insertId;
-            // Insert genre relations
             if (genre_ids && genre_ids.length > 0) {
                 for (const genreId of genre_ids) {
                     const genreQuery = 'INSERT INTO movie_genres (movie_id, genre_id) VALUES (?, ?)';
@@ -81,7 +80,6 @@ class MovieService {
     static async updateMovie(id, movieData) {
         try {
             const { title, description, release_year, duration, rating, poster_url } = movieData;
-            
             const query = `
                 UPDATE movies 
                 SET title = ?, description = ?, release_year = ?, duration = ?, rating = ?, poster_url = ?

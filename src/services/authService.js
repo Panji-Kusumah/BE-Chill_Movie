@@ -18,7 +18,6 @@ class AuthService {
             throw error;
         }
         try {
-            // Cek apakah email atau username sudah terdaftar
             const [existingUsers] = await db.execute(
                 'SELECT id FROM users WHERE email = ? OR username = ?',
                 [email.toLowerCase(), username]
@@ -28,7 +27,6 @@ class AuthService {
                 error.statusCode = 409;
                 throw error;
             }
-            // ngehash password dengan bcrypt
             const hashedPassword = await bcrypt.hash(password, 10);
             const [result] = await db.execute(
                 `INSERT INTO users (fullname, username, email, password, is_verified) VALUES (?, ?, ?, ?, ?)`,
@@ -39,9 +37,8 @@ class AuthService {
             } catch (emailError) {
                 console.error('Failed to send verification email:', emailError.message);
             }
-            // Ambil data user yang baru dibuat
             const [users] = await db.execute(
-                `SELECT id, fullname, username, email,profile_photo, is_verified, created_at FROM users HERE id = ?`,
+                `SELECT id, fullname, username, email, profile_photo, is_verified, created_at FROM users WHERE id = ?`,
                 [result.insertId]
             );
             return users[0];
@@ -57,9 +54,8 @@ class AuthService {
             throw error;
         }
         try {
-            // Cari user berdasarkan email
             const [users] = await db.execute(
-                `SELECT id, fullname, username,email, password, is_verified FROM users WHERE email = ?`,
+                `SELECT id, fullname, username, email, password, is_verified FROM users WHERE email = ?`,
                 [email.toLowerCase()]
             );
             if (users.length === 0) {
@@ -69,7 +65,6 @@ class AuthService {
                 );
             }
             const user = users[0];
-            // Cek password dengan bcrypt.compare
             const valid = await bcrypt.compare(
                 password,
                 user.password
@@ -80,7 +75,6 @@ class AuthService {
                     { statusCode: 401 }
                 );
             }
-            // Generate JWT token
             if (!process.env.JWT_SECRET) {
                 throw new Error('JWT_SECRET is not configured');
             }
@@ -93,7 +87,6 @@ class AuthService {
                 process.env.JWT_SECRET,
                 { expiresIn: '24h' }
             );
-            // Hapus password dari response
             const { password: _, ...userWithoutPassword } = user;
             return {
                 user: userWithoutPassword,

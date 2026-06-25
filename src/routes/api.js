@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/database');
 
-//get all movie & series
 router.get('/movies', async (req, res) => {
     try {
         const [rows] = await db.query(`
@@ -24,7 +23,7 @@ router.get('/movies', async (req, res) => {
         });
     }
 });
-// get movie by id
+
 router.get('/movie/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -53,7 +52,7 @@ router.get('/movie/:id', async (req, res) => {
         });
     }
 });
-// pos add movie
+
 router.post('/movie', async (req, res) => {
     try {
         const {
@@ -87,7 +86,7 @@ router.post('/movie', async (req, res) => {
         });
     }
 });
-// update movie
+
 router.patch('/movie/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -133,7 +132,7 @@ router.delete('/movie/:id', async (req, res) => {
                 message: 'Movie not found'
             });
         }
-        // Delete movie 
+
         await db.query('DELETE FROM Series_Film WHERE series_id = ?', [id]);
         res.json({
             success: true,

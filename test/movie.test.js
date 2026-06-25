@@ -4,10 +4,8 @@ const db = require('../src/config/database');
 const { generateTestToken } = require('./helpers/testHelper');
 
 describe('Movie API Endpoints', () => {
-
     let createdMovieId;
     let authToken;
-
     beforeAll(async () => {
         authToken = generateTestToken();
     });
@@ -34,7 +32,6 @@ describe('Movie API Endpoints', () => {
             expect(res.body.success).toBe(false);
         });
     });
-    // Test GET /api/movie/:id
     describe('GET /api/movie/:id', () => {
         it('should get movie by id with auth', async () => {
             const res = await request(app)
@@ -43,7 +40,6 @@ describe('Movie API Endpoints', () => {
             expect(res.statusCode).toBe(200);
             expect(res.body.success).toBe(true);
         });
-
         it('should return 404 for non-existent movie', async () => {
             const res = await request(app)
                 .get('/api/movie/99999')
@@ -51,15 +47,12 @@ describe('Movie API Endpoints', () => {
             expect(res.statusCode).toBe(404);
             expect(res.body.success).toBe(false);
         });
-
         it('should return 401 without auth token', async () => {
             const res = await request(app).get('/api/movie/1');
             expect(res.statusCode).toBe(401);
             expect(res.body.success).toBe(false);
         });
     });
-
-    // Test POST /api/movie
     describe('POST /api/movie', () => {
         it('should create new movie with auth', async () => {
             const newMovie = {
@@ -80,7 +73,6 @@ describe('Movie API Endpoints', () => {
             expect(res.body.data).toHaveProperty('movie_id');
             createdMovieId = res.body.data.movie_id;
         });
-
         it('should return 401 without auth token', async () => {
             const newMovie = {
                 title: 'Test Movie',
@@ -97,8 +89,6 @@ describe('Movie API Endpoints', () => {
             expect(res.body.success).toBe(false);
         });
     });
-
-    // Test PATCH /api/movie/:id
     describe('PATCH /api/movie/:id', () => {
         it('should update movie with auth', async () => {
             const movieIdToUpdate = createdMovieId || 1;
@@ -117,7 +107,6 @@ describe('Movie API Endpoints', () => {
             expect(res.statusCode).toBe(200);
             expect(res.body.success).toBe(true);
         });
-
         it('should return 401 without auth token', async () => {
             const updateData = { title: 'Updated' };
             const res = await request(app)
@@ -127,8 +116,6 @@ describe('Movie API Endpoints', () => {
             expect(res.body.success).toBe(false);
         });
     });
-
-    // Test DELETE /api/movie/:id
     describe('DELETE /api/movie/:id', () => {
         it('should delete movie with auth', async () => {
             const movieIdToDelete = createdMovieId || 1;
@@ -138,7 +125,6 @@ describe('Movie API Endpoints', () => {
             expect(res.statusCode).toBe(200);
             expect(res.body.success).toBe(true);
         });
-
         it('should return 404 when deleting non-existent movie', async () => {
             const res = await request(app)
                 .delete('/api/movie/99999')
@@ -146,7 +132,6 @@ describe('Movie API Endpoints', () => {
             expect(res.statusCode).toBe(404);
             expect(res.body.success).toBe(false);
         });
-
         it('should return 401 without auth token', async () => {
             const res = await request(app).delete('/api/movie/1');
             expect(res.statusCode).toBe(401);

@@ -1,6 +1,5 @@
-const authService = require('../services/authService');
-const emailService = require('../services/emailService');
-const ApiResponse = require('../utils/ApiResponse');
+const AuthService = require('../services/authService');
+const EmailService = require('../services/emailService');
 
 class AuthController {
     async register(req, res, next) {
@@ -11,43 +10,26 @@ class AuthController {
                 error.statusCode = 400;
                 throw error;
             }
-            const user = await authService.register({
-                fullname,
-                username,
-                email,
-                password
+            const user = await AuthService.register({ fullname, username, email, password });
+            res.status(201).json({
+                success: true,
+                message: 'User registered successfully. Please check your email to verify your account.',
+                data: user
             });
-            return ApiResponse.success(
-                res,
-                201,
-                user,
-                'User registered successfully. Please check your email to verify your account.'
-            );
         } catch (error) {
-            error.statusCode = error.statusCode || 500;
             next(error);
         }
     }
     async login(req, res, next) {
         try {
             const { email, password } = req.body;
-            if (!email || !password) {
-                const error = new Error('Email and password are required');
-                error.statusCode = 400;
-                throw error;
-            }
-            const result = await authService.login({
-                email,
-                password
+            const result = await AuthService.login({ email, password });
+            res.status(200).json({
+                success: true,
+                message: 'Login successful',
+                data: result
             });
-            return ApiResponse.success(
-                res,
-                200,
-                result,
-                'Login successful'
-            );
         } catch (error) {
-            error.statusCode = error.statusCode || 500;
             next(error);
         }
     }
@@ -59,15 +41,13 @@ class AuthController {
                 error.statusCode = 400;
                 throw error;
             }
-            const result = await emailService.verifyEmail(token);
-            return ApiResponse.success(
-                res,
-                200,
-                result,
-                'Email verified successfully'
-            );
+            const result = await EmailService.verifyEmail(token);
+            res.status(200).json({
+                success: true,
+                message: 'Email verified successfully',
+                data: result
+            });
         } catch (error) {
-            error.statusCode = error.statusCode || 500;
             next(error);
         }
     }

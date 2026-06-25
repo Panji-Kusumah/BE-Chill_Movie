@@ -8,9 +8,7 @@ const generateTestToken = (payload = {}, secret = process.env.JWT_SECRET) => {
         ...payload
     }, secret, { expiresIn: '24h' });
 };
-
 const getAuthHeader = (token) => `Bearer ${token}`;
-
-const withAuth = (requestInstance, token) => requestInstance.set('Authorization', getAuthHeader(token));
-
+const withAuth = (requestInstance, token) => 
+    requestInstance.set('Authorization', getAuthHeader(token));
 module.exports = { generateTestToken, getAuthHeader, withAuth };

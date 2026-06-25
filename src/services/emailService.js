@@ -1,12 +1,12 @@
 const resend = require('../utils/emailConfig');
-const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const db = require('../config/database');
 
 class EmailService {
     static async sendVerificationEmail(email, fullname) {
         try {
-            const token = uuidv4();
+            const token = crypto.randomUUID();
             const hashedToken = await bcrypt.hash(token, 10);
             await db.execute(
                 'UPDATE users SET verification_token = ? WHERE email = ?',
@@ -34,11 +34,16 @@ class EmailService {
             });
             if (error) {
                 console.error('Resend API Error:', error);
-                throw new Error('Failed to send verification email');
+                const emailError = new Error('Failed to send verification email');
+                emailError.statusCode = 500;
+                throw emailError;
             }
             return token;
         } catch (error) {
-            throw new Error(`Email service error: ${error.message}`);
+            if (error.statusCode) throw error;
+            const wrappedError = new Error(`Email service error: ${error.message}`);
+            wrappedError.statusCode = 500;
+            throw wrappedError;
         }
     }
     static async verifyEmail(token) {
@@ -74,7 +79,10 @@ class EmailService {
             );
             return { email: user.email };
         } catch (error) {
-            throw new Error(`Email verification error: ${error.message}`);
+            if (error.statusCode) throw error;
+            const wrappedError = new Error(`Email verification error: ${error.message}`);
+            wrappedError.statusCode = 500;
+            throw wrappedError;
         }
     }
 }

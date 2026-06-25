@@ -7,5 +7,7 @@ const upload = require('../middleware/uploadMiddleware');
 
 router.use(authMiddleware.verifyToken);
 router.get('/profile', UserController.getProfile);
+router.patch('/profile', UserController.updateProfile);
 router.patch('/profile/photo', upload.single('photo'), UserController.updateProfilePhoto);
+
 module.exports = router;

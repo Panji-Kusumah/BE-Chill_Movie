@@ -5,7 +5,7 @@ module.exports = {
         'src/**/*.js',
         '!src/app.js'
     ],
-    moduleNameMapper: {
-        '^uuid$': '<rootDir>/node_modules/uuid/dist/index.js'
-    }
+    transformIgnorePatterns: [
+        '/node_modules/(?!(uuid)/)'
+    ]
 };
