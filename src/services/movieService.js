@@ -1,7 +1,7 @@
 const db = require('../config/database');
 
-class MovieService {
-    static async getAllMovies(filters = {}) {
+const MovieService = {
+    async getAllMovies(filters = {}) {
         try {
             const { genre, search, sortBy } = filters;
             let query = `
@@ -35,8 +35,8 @@ class MovieService {
         } catch (error) {
             throw new Error(`Failed to fetch movies: ${error.message}`);
         }
-    }
-    static async getMovieById(id) {
+    },
+    async getMovieById(id) {
         try {
             const query = `
                 SELECT m.*, GROUP_CONCAT(g.nama_genre) as genres
@@ -51,8 +51,8 @@ class MovieService {
         } catch (error) {
             throw new Error(`Failed to fetch movie: ${error.message}`);
         }
-    }
-    static async createMovie(movieData, genre_ids) {
+    },
+    async createMovie(movieData, genre_ids) {
         const { title, description, release_year, duration, rating, poster_url } = movieData;
         if (!title) {
             throw new Error('Title is required');
@@ -76,8 +76,8 @@ class MovieService {
         } catch (error) {
             throw new Error(`Failed to create movie: ${error.message}`);
         }
-    }
-    static async updateMovie(id, movieData) {
+    },
+    async updateMovie(id, movieData) {
         try {
             const { title, description, release_year, duration, rating, poster_url } = movieData;
             const query = `
@@ -91,8 +91,8 @@ class MovieService {
         } catch (error) {
             throw new Error(`Failed to update movie: ${error.message}`);
         }
-    }
-    static async deleteMovie(id) {
+    },
+    async deleteMovie(id) {
         try {
             const query = 'DELETE FROM movies WHERE movie_id = ?';
             await db.execute(query, [id]);
@@ -100,6 +100,6 @@ class MovieService {
             throw new Error(`Failed to delete movie: ${error.message}`);
         }
     }
-}
+};
 
 module.exports = MovieService;

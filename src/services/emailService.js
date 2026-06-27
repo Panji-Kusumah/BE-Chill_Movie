@@ -3,16 +3,19 @@ const crypto = require('crypto');
 const bcrypt = require('bcrypt');
 const db = require('../config/database');
 
-class EmailService {
-    static async sendVerificationEmail(email, fullname) {
+const EmailService = {
+    async sendVerificationEmail(email, fullname) {
         try {
             const token = crypto.randomUUID();
             const hashedToken = await bcrypt.hash(token, 10);
+            
             await db.execute(
                 'UPDATE users SET verification_token = ? WHERE email = ?',
                 [hashedToken, email]
             );
+            
             const verificationLink = `${process.env.APP_URL || 'http://localhost:3000'}/api/auth/verify-email?token=${token}`;
+            
             const { data, error } = await resend.emails.send({
                 from: `${process.env.RESEND_FROM_NAME || 'Chill Movie'} <${process.env.RESEND_FROM_EMAIL}>`,
                 to: [email],
@@ -32,12 +35,14 @@ class EmailService {
                     <p style="color: #888; font-size: 12px;">Jika kamu tidak membuat akun ini, abaikan email ini.</p>
                 `
             });
+            
             if (error) {
                 console.error('Resend API Error:', error);
                 const emailError = new Error('Failed to send verification email');
                 emailError.statusCode = 500;
                 throw emailError;
             }
+            
             return token;
         } catch (error) {
             if (error.statusCode) throw error;
@@ -45,8 +50,8 @@ class EmailService {
             wrappedError.statusCode = 500;
             throw wrappedError;
         }
-    }
-    static async verifyEmail(token) {
+    },
+    async verifyEmail(token) {
         try {
             const [users] = await db.execute(
                 'SELECT id, email, is_verified, verification_token FROM users WHERE is_verified = false'
@@ -85,6 +90,6 @@ class EmailService {
             throw wrappedError;
         }
     }
-}
+};
 
 module.exports = EmailService;

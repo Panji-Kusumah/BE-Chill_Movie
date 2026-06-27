@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const ApiResponse = require('../utils/ApiResponse');
 
-class AuthMiddleware {
+const AuthMiddleware = {
     verifyToken(req, res, next) {
         const authHeader = req.headers.authorization;
         if (!authHeader) {
@@ -24,6 +24,6 @@ class AuthMiddleware {
             return ApiResponse.error(res, 401, 'Invalid token');
         }
     }
-}
+};
 
-module.exports = new AuthMiddleware();
+module.exports = AuthMiddleware;

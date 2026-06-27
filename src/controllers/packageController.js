@@ -1,16 +1,16 @@
 const PackageService = require('../services/packageService');
 const ApiResponse = require('../utils/ApiResponse');
 
-class PackageController {
-    static async getAllPackages(req, res) {
+const PackageController = {
+    async getAllPackages(req, res) {
         try {
             const packages = await PackageService.getAllPackages();
             return ApiResponse.success(res, 200, packages, 'Packages retrieved successfully');
         } catch (error) {
             return ApiResponse.error(res, 500, error.message);
         }
-    }
-    static async getPackageById(req, res) {
+    },
+    async getPackageById(req, res) {
         try {
             const pkg = await PackageService.getPackageById(req.params.id);
             if (!pkg) {
@@ -20,16 +20,16 @@ class PackageController {
         } catch (error) {
             return ApiResponse.error(res, 500, error.message);
         }
-    }
-    static async createPackage(req, res) {
+    },
+    async createPackage(req, res) {
         try {
             const newId = await PackageService.createPackage(req.body);
             return ApiResponse.created(res, { package_id: newId }, 'Package created successfully');
         } catch (error) {
             return ApiResponse.error(res, 500, error.message);
         }
-    }
-    static async updatePackage(req, res) {
+    },
+    async updatePackage(req, res) {
         try {
             const existing = await PackageService.getPackageById(req.params.id);
             if (!existing) {
@@ -40,8 +40,8 @@ class PackageController {
         } catch (error) {
             return ApiResponse.error(res, 500, error.message);
         }
-    }
-    static async deletePackage(req, res) {
+    },
+    async deletePackage(req, res) {
         try {
             const existing = await PackageService.getPackageById(req.params.id);
             if (!existing) {
@@ -53,6 +53,6 @@ class PackageController {
             return ApiResponse.error(res, 500, error.message);
         }
     }
-}
+};
 
 module.exports = PackageController;

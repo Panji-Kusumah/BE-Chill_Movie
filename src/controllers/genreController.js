@@ -1,16 +1,16 @@
 const GenreService = require('../services/genreService');
 const ApiResponse = require('../utils/ApiResponse');
 
-class GenreController {
-    static async getAllGenres(req, res) {
+const GenreController = {
+    async getAllGenres(req, res) {
         try {
             const genres = await GenreService.getAllGenres();
             return ApiResponse.success(res, 200, genres, 'Genres retrieved successfully');
         } catch (error) {
             return ApiResponse.error(res, 500, error.message);
         }
-    }
-    static async getGenreById(req, res) {
+    },
+    async getGenreById(req, res) {
         try {
             const genre = await GenreService.getGenreById(req.params.id);
             if (!genre) {
@@ -20,8 +20,8 @@ class GenreController {
         } catch (error) {
             return ApiResponse.error(res, 500, error.message);
         }
-    }
-    static async createGenre(req, res) {
+    },
+    async createGenre(req, res) {
         try {
             const { nama_genre } = req.body;
             if (!nama_genre) {
@@ -32,8 +32,8 @@ class GenreController {
         } catch (error) {
             return ApiResponse.error(res, 500, error.message);
         }
-    }
-    static async deleteGenre(req, res) {
+    },
+    async deleteGenre(req, res) {
         try {
             const existing = await GenreService.getGenreById(req.params.id);
             if (!existing) {
@@ -45,6 +45,6 @@ class GenreController {
             return ApiResponse.error(res, 500, error.message);
         }
     }
-}
+};
 
 module.exports = GenreController;

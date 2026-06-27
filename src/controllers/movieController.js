@@ -1,8 +1,8 @@
 const MovieService = require('../services/movieService');
 const ApiResponse = require('../utils/ApiResponse');
 
-class MovieController {
-    static async getAllMovies(req, res) {
+const MovieController = {
+    async getAllMovies(req, res) {
         try {
             const filters = {
                 genre: req.query.genre,
@@ -19,8 +19,8 @@ class MovieController {
         } catch (error) {
             return ApiResponse.error(res, 500, error.message);
         }
-    }
-    static async getMovieById(req, res) {
+    },
+    async getMovieById(req, res) {
         try {
             const movie = await MovieService.getMovieById(req.params.id);
             if (!movie) {
@@ -35,8 +35,8 @@ class MovieController {
         } catch (error) {
             return ApiResponse.error(res, 500, error.message);
         }
-    }
-    static async createMovie(req, res) {
+    },
+    async createMovie(req, res) {
         try {
             const { genre_ids, ...movieData } = req.body;
             const newId = await MovieService.createMovie(
@@ -51,8 +51,8 @@ class MovieController {
         } catch (error) {
             return ApiResponse.error(res, 500, error.message);
         }
-    }
-    static async updateMovie(req, res) {
+    },
+    async updateMovie(req, res) {
         try {
             const existing = await MovieService.getMovieById(req.params.id);
             if (!existing) {
@@ -71,8 +71,8 @@ class MovieController {
         } catch (error) {
             return ApiResponse.error(res, 500, error.message);
         }
-    }
-    static async deleteMovie(req, res) {
+    },
+    async deleteMovie(req, res) {
         try {
             const existing = await MovieService.getMovieById(req.params.id);
             if (!existing) {
@@ -89,6 +89,6 @@ class MovieController {
             return ApiResponse.error(res, 500, error.message);
         }
     }
-}
+};
 
 module.exports = MovieController;

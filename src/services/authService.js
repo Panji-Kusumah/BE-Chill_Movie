@@ -3,8 +3,7 @@ const jwt = require('jsonwebtoken');
 const db = require('../config/database');
 const EmailService = require('./emailService');
 
-class AuthService {
-
+const AuthService = {
     async register(userData) {
         const { fullname, username, email, password } = userData;
         if (!fullname || !username || !email || !password) {
@@ -29,7 +28,7 @@ class AuthService {
             }
             const hashedPassword = await bcrypt.hash(password, 10);
             const [result] = await db.execute(
-                `INSERT INTO users (fullname, username, email, password, is_verified) VALUES (?, ?, ?, ?, ?)`,
+                'INSERT INTO users (fullname, username, email, password, is_verified) VALUES (?, ?, ?, ?, ?)',
                 [fullname, username, email.toLowerCase(), hashedPassword, false]
             );
             try {
@@ -38,7 +37,7 @@ class AuthService {
                 console.error('Failed to send verification email:', emailError.message);
             }
             const [users] = await db.execute(
-                `SELECT id, fullname, username, email, profile_photo, is_verified, created_at FROM users WHERE id = ?`,
+                'SELECT id, fullname, username, email, profile_photo, is_verified, created_at FROM users WHERE id = ?',
                 [result.insertId]
             );
             return users[0];
@@ -46,7 +45,7 @@ class AuthService {
             if (error.statusCode) throw error;
             throw new Error(`Registration failed: ${error.message}`);
         }
-    }
+    },
     async login({ email, password }) {
         if (!email || !password) {
             const error = new Error('Email and password are required');
@@ -55,48 +54,32 @@ class AuthService {
         }
         try {
             const [users] = await db.execute(
-                `SELECT id, fullname, username, email, password, is_verified FROM users WHERE email = ?`,
+                'SELECT id, fullname, username, email, password, is_verified FROM users WHERE email = ?',
                 [email.toLowerCase()]
             );
             if (users.length === 0) {
-                throw Object.assign(
-                    new Error('Invalid email or password'),
-                    { statusCode: 401 }
-                );
+                throw Object.assign(new Error('Invalid email or password'), { statusCode: 401 });
             }
             const user = users[0];
-            const valid = await bcrypt.compare(
-                password,
-                user.password
-            );
+            const valid = await bcrypt.compare(password, user.password);
             if (!valid) {
-                throw Object.assign(
-                    new Error('Invalid email or password'),
-                    { statusCode: 401 }
-                );
+                throw Object.assign(new Error('Invalid email or password'), { statusCode: 401 });
             }
             if (!process.env.JWT_SECRET) {
                 throw new Error('JWT_SECRET is not configured');
             }
             const token = jwt.sign(
-                {
-                    userId: user.id,
-                    email: user.email,
-                    username: user.username
-                },
+                { userId: user.id, email: user.email, username: user.username },
                 process.env.JWT_SECRET,
                 { expiresIn: '24h' }
             );
             const { password: _, ...userWithoutPassword } = user;
-            return {
-                user: userWithoutPassword,
-                token
-            };
+            return { user: userWithoutPassword, token };
         } catch (error) {
             if (error.statusCode) throw error;
             throw new Error(`Login failed: ${error.message}`);
         }
     }
-}
+};
 
-module.exports = new AuthService();
+module.exports = AuthService;

@@ -1,7 +1,7 @@
 const db = require('../config/database');
 
-class EpisodeService {
-    static async getAllEpisodes() {
+const EpisodeService = {
+    async getAllEpisodes() {
         try {
             const [rows] = await db.execute(`
                 SELECT em.*, sf.judul as series_judul
@@ -12,8 +12,8 @@ class EpisodeService {
         } catch (error) {
             throw new Error(`Failed to fetch episodes: ${error.message}`);
         }
-    }
-    static async getEpisodeById(id) {
+    },
+    async getEpisodeById(id) {
         try {
             const [rows] = await db.execute(`
                 SELECT em.*, sf.judul as series_judul
@@ -25,8 +25,8 @@ class EpisodeService {
         } catch (error) {
             throw new Error(`Failed to fetch episode: ${error.message}`);
         }
-    }
-    static async getEpisodesBySeries(seriesId) {
+    },
+    async getEpisodesBySeries(seriesId) {
         try {
             const [rows] = await db.execute(`
                 SELECT * FROM Episode_Movie WHERE series_id = ? ORDER BY nomor_season, nomor_episode
@@ -35,8 +35,8 @@ class EpisodeService {
         } catch (error) {
             throw new Error(`Failed to fetch episodes for series: ${error.message}`);
         }
-    }
-    static async createEpisode(episodeData) {
+    },
+    async createEpisode(episodeData) {
         const { series_id, judul_episode, nomor_season, nomor_episode, durasi, video_url, thumbnail_url, deskripsi, views_count } = episodeData;
         
         if (!series_id || !judul_episode || !nomor_season || !nomor_episode) {
@@ -52,8 +52,8 @@ class EpisodeService {
         } catch (error) {
             throw new Error(`Failed to create episode: ${error.message}`);
         }
-    }
-    static async updateEpisode(id, episodeData) {
+    },
+    async updateEpisode(id, episodeData) {
         const { judul_episode, nomor_season, nomor_episode, durasi, video_url, thumbnail_url, deskripsi } = episodeData;
         try {
             await db.execute(
@@ -64,14 +64,14 @@ class EpisodeService {
         } catch (error) {
             throw new Error(`Failed to update episode: ${error.message}`);
         }
-    }
-    static async deleteEpisode(id) {
+    },
+    async deleteEpisode(id) {
         try {
             await db.execute('DELETE FROM Episode_Movie WHERE episode_id = ?', [id]);
         } catch (error) {
             throw new Error(`Failed to delete episode: ${error.message}`);
         }
     }
-}
+};
 
 module.exports = EpisodeService;

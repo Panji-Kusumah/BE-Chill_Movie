@@ -50,12 +50,10 @@ app.get('/', (req, res) => {
 
 const errorHandler = require('./middleware/errorHandler');
 const notFound = require('./middleware/notFound');
-
 app.use(notFound);
 app.use(errorHandler);
-
 const server = app.listen(PORT, () => {
-    console.log(`✅ Server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
 
 module.exports = { app, server };

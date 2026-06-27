@@ -1,7 +1,7 @@
 const AuthService = require('../services/authService');
 const EmailService = require('../services/emailService');
 
-class AuthController {
+const AuthController = {
     async register(req, res, next) {
         try {
             const { fullname, username, email, password } = req.body;
@@ -19,7 +19,7 @@ class AuthController {
         } catch (error) {
             next(error);
         }
-    }
+    },
     async login(req, res, next) {
         try {
             const { email, password } = req.body;
@@ -32,7 +32,7 @@ class AuthController {
         } catch (error) {
             next(error);
         }
-    }
+    },
     async verifyEmail(req, res, next) {
         try {
             const { token } = req.query;
@@ -51,6 +51,6 @@ class AuthController {
             next(error);
         }
     }
-}
+};
 
-module.exports = new AuthController();
+module.exports = AuthController;
